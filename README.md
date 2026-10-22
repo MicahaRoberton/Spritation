@@ -37,6 +37,10 @@ in the browser.
 - Drag and drop files onto the window
 - Undo/redo for every edit, and autosave so a reload never loses work
 
+**Examples**
+- A bouncing slime and a 10-frame talking pumpkin, under Examples in the toolbar
+  or File menu. In the browser, a link ending in `#pumpkin` opens it and plays it.
+
 Press **F1** in the app for the full shortcut list. They follow Aseprite where
 possible (B pencil, E eraser, G bucket, M marquee, V move, Alt+N new frame…).
 

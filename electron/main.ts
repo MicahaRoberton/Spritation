@@ -60,6 +60,7 @@ function buildMenu() {
       submenu: [
         cmd('New Sprite…', 'new', 'CmdOrCtrl+N'),
         cmd('Open…', 'open', 'CmdOrCtrl+O'),
+        cmd('Examples…', 'examples'),
         { type: 'separator' },
         cmd('Save', 'save', 'CmdOrCtrl+S'),
         cmd('Save As…', 'save-as', 'CmdOrCtrl+Shift+S'),

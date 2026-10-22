@@ -114,3 +114,17 @@ describe('structural actions', () => {
     expect(ed.tool).toBe('move');
   });
 });
+
+describe('examples', () => {
+  it('every example is a valid, saveable document', async () => {
+    const { EXAMPLES } = await import('../src/editor/examples');
+    const { serializeDocument, deserializeDocument } = await import('../src/core/serialize');
+    for (const ex of EXAMPLES) {
+      const doc = ex.create();
+      expect(doc.layers.every((l) => l.cels.length === doc.frames.length)).toBe(true);
+      expect(doc.tags.every((t) => t.to < doc.frames.length)).toBe(true);
+      expect(deserializeDocument(serializeDocument(doc)).frames.length).toBe(doc.frames.length);
+    }
+    expect(EXAMPLES.find((e) => e.id === 'pumpkin')!.create().frames.length).toBe(10);
+  });
+});

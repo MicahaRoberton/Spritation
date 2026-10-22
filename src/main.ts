@@ -4,6 +4,7 @@ import { App } from './editor/app';
 import { COMMANDS, bindKeyboard } from './editor/commands';
 import { h } from './editor/dom';
 import { Editor } from './editor/editor';
+import { findExample } from './editor/examples';
 import { PROJECT_EXT, loadFile } from './editor/files';
 import { ICONS } from './editor/icons';
 import { mountColors, mountPalette } from './editor/panels/colors';
@@ -18,7 +19,15 @@ import { detectPlatform } from './platform/platform';
 
 const AUTOSAVE_KEY = 'spritation.autosave.v1';
 
-function restore(): { ed: Editor; restored: boolean } {
+function restore(): { ed: Editor; restored: boolean; example: boolean } {
+  // A link ending in #pumpkin (or another example id) opens that example.
+  const linked = findExample(location.hash.slice(1));
+  if (linked) {
+    const ed = new Editor(linked.create());
+    ed.projectName = linked.id;
+    ed.layer = ed.doc.layers.length - 1;
+    return { ed, restored: false, example: true };
+  }
   try {
     const raw = localStorage.getItem(AUTOSAVE_KEY);
     if (raw) {
@@ -27,7 +36,7 @@ function restore(): { ed: Editor; restored: boolean } {
       ed.projectName = saved.name || 'Untitled';
       ed.modified = !!saved.modified;
       ed.layer = ed.doc.layers.length - 1;
-      return { ed, restored: true };
+      return { ed, restored: true, example: false };
     }
   } catch {
     // A corrupt or blocked autosave just means starting fresh.
@@ -35,13 +44,13 @@ function restore(): { ed: Editor; restored: boolean } {
   const ed = new Editor(sampleSprite());
   ed.projectName = 'slime';
   ed.layer = 1;
-  return { ed, restored: false };
+  return { ed, restored: false, example: false };
 }
 
 function boot() {
   const platform = detectPlatform();
   document.documentElement.dataset.platform = platform.kind;
-  const { ed, restored } = restore();
+  const { ed, restored, example } = restore();
   ed.primary = ed.doc.palette[10] ?? ed.primary;
   ed.secondary = 0;
 
@@ -98,7 +107,10 @@ function boot() {
   });
   ed.emit('file', 'tool', 'color', 'view', 'playback');
   // Fit once the panels have taken their space and the stage has its real size.
-  requestAnimationFrame(() => view.fit());
+  requestAnimationFrame(() => {
+    view.fit();
+    if (example) app.run('play');
+  });
 
   // Drop a .sprite.json or an image anywhere to open it.
   window.addEventListener('dragover', (e) => e.preventDefault());
@@ -126,6 +138,7 @@ function mountMenubar(app: App, root: HTMLElement) {
       btn(ICONS.open, 'Open', 'open', 'Open a sprite or image (Ctrl+O)'),
       btn(ICONS.save, 'Save', 'save', `Save as ${PROJECT_EXT} (Ctrl+S)`),
       btn(ICONS.export, 'Export', 'export', 'Export PNG, sprite sheet or GIF (Ctrl+E)'),
+      btn(ICONS.play, 'Examples', 'examples', 'Open an example animation'),
     ),
     h('div', { class: 'menu-group' }, undo, redo),
     h(

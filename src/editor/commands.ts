@@ -4,6 +4,7 @@ import { App } from './app';
 import { field, isDialogOpen, numberInput, openDialog, readInt, selectInput } from './dialogs';
 import { h } from './dom';
 import { ToolId } from './editor';
+import { examplesDialog } from './examples';
 import { confirmDiscard, exportDialog, newSpriteDialog, openFile, saveProject } from './files';
 import { TOOL_INFO } from './tools';
 
@@ -118,6 +119,7 @@ const zoomAtCursor = (app: App, dir: 1 | -1) => {
 export const COMMANDS: Record<string, Command> = {
   new: { label: 'New sprite', keys: ['Ctrl+N'], run: (app) => newSpriteDialog(app) },
   open: { label: 'Open', keys: ['Ctrl+O'], run: (app) => confirmDiscard(app, () => void openFile(app)) },
+  examples: { label: 'Examples', run: examplesDialog },
   save: { label: 'Save', keys: ['Ctrl+S'], run: (app) => void saveProject(app) },
   'save-as': { label: 'Save as', keys: ['Ctrl+Shift+S'], run: (app) => void saveProject(app, true) },
   export: { label: 'Export', keys: ['Ctrl+E'], run: (app) => exportDialog(app) },

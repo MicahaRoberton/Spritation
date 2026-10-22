@@ -30,6 +30,8 @@ export class Viewport {
   private pointers = new Map<number, { x: number; y: number }>();
   private pinch: { dist: number; mid: Point; zoom: number; panX: number; panY: number } | null = null;
   private frameReq = 0;
+  /** Keep refitting on resize until the user zooms or pans themselves. */
+  private autoFit = true;
 
   hover: Point | null = null;
   spaceDown = false;
@@ -63,7 +65,7 @@ export class Viewport {
     this.canvas.height = Math.round(this.cssH * this.dpr);
     this.canvas.style.width = `${this.cssW}px`;
     this.canvas.style.height = `${this.cssH}px`;
-    if (first) this.fit();
+    if (first || this.autoFit) this.fit();
     this.requestRender();
   }
 
@@ -74,6 +76,7 @@ export class Viewport {
     this.ed.zoom = z;
     this.ed.panX = Math.round((this.cssW - width * z) / 2);
     this.ed.panY = Math.round((this.cssH - height * z) / 2);
+    this.autoFit = true;
     this.ed.emit('view');
   }
 
@@ -85,6 +88,7 @@ export class Viewport {
     ed.zoom = z;
     ed.panX = Math.round(cx - sx * z);
     ed.panY = Math.round(cy - sy * z);
+    this.autoFit = false;
     ed.emit('view');
   }
 
@@ -174,12 +178,14 @@ export class Viewport {
         this.ed.zoom = z;
         this.ed.panX = Math.round(mid.x - sx * z);
         this.ed.panY = Math.round(mid.y - sy * z);
+        this.autoFit = false;
         this.ed.emit('view');
         return;
       }
       if (this.pan && this.pan.pointerId === e.pointerId) {
         this.ed.panX = this.pan.px + (e.clientX - this.pan.x);
         this.ed.panY = this.pan.py + (e.clientY - this.pan.y);
+        this.autoFit = false;
         this.ed.emit('view');
         return;
       }
@@ -221,6 +227,7 @@ export class Viewport {
         } else {
           this.ed.panX -= e.deltaX;
           this.ed.panY -= e.deltaY;
+          this.autoFit = false;
           this.ed.emit('view');
         }
       },
