@@ -1,0 +1,52 @@
+{
+  "name": "spritation",
+  "productName": "Spritation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pixel art sprite editor, the first module of a 2D game creation toolkit.",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit && tsc -p electron/tsconfig.json --noEmit",
+    "build:web": "vite build",
+    "build:electron": "tsc -p electron/tsconfig.json",
+    "build:preview": "vite build --mode preview",
+    "build": "npm run typecheck && npm run build:web && npm run build:electron",
+    "desktop": "npm run build && electron .",
+    "desktop:dev": "npm run build:electron && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .",
+    "package": "npm run build && electron-builder",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "cross-env": "^7.0.3",
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.0",
+    "vite-plugin-singlefile": "^2.3.0",
+    "vitest": "^3.2.4"
+  },
+  "build": {
+    "appId": "com.spritation.app",
+    "productName": "Spritation",
+    "files": [
+      "dist/**",
+      "dist-electron/**",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.graphics-design"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}
