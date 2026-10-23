@@ -126,5 +126,7 @@ describe('examples', () => {
       expect(deserializeDocument(serializeDocument(doc)).frames.length).toBe(doc.frames.length);
     }
     expect(EXAMPLES.find((e) => e.id === 'pumpkin')!.create().frames.length).toBe(10);
+    const bruiser = EXAMPLES.find((e) => e.id === 'bruiser')!.create();
+    expect([bruiser.width, bruiser.height]).toEqual([180, 320]);
   });
 });
