@@ -1,5 +1,6 @@
 import { SpriteDoc } from '../core/document';
 import { App } from './app';
+import { bruiserSprite } from './bruiser';
 import { openDialog } from './dialogs';
 import { h } from './dom';
 import { confirmDiscard } from './files';
@@ -16,6 +17,7 @@ export interface Example {
 export const EXAMPLES: Example[] = [
   { id: 'slime', name: 'Bouncing slime', about: '32×32, 4 frames, shadow on its own layer', create: sampleSprite },
   { id: 'pumpkin', name: 'Talking pumpkin', about: '32×32, 10 frames of lip-sync on a Face layer', create: pumpkinSprite },
+  { id: 'bruiser', name: 'Bean-head bruiser', about: '180×320 character from a pencil sketch, with a blink on a Face layer', create: bruiserSprite },
 ];
 
 export function findExample(id: string): Example | undefined {
